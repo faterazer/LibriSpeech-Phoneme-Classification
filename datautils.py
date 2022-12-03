@@ -11,7 +11,8 @@ from tqdm.auto import tqdm
 def concat_nframes_feat(feat: Tensor, nframes: int) -> Tensor:
     # Output shape: (len of feat, 2 * nframes + 1, 39)
     assert nframes >= 0
-    feat: Tensor = F.pad(feat, (0, 0, nframes, nframes))
+    # feat: Tensor = F.pad(feat, (0, 0, nframes, nframes))
+    feat = torch.cat([feat[0:nframes, :].flip(0), feat, feat[-nframes:, :].flip(0)], dim=0)
     return feat.unfold(0, 2 * nframes + 1, 1).permute(0, 2, 1)
 
 

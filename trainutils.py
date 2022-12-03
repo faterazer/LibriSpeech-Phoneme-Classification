@@ -24,7 +24,7 @@ def test(test_loader: DataLoader, model: nn.Module, criterion: nn.Module) -> Tup
             preds = y_hat.argmax(1)
             acc = torch.sum((preds == y).float())
 
-            running_loss += loss.item()
+            running_loss += loss.item() * len(y)
             running_acc += acc.item()
     return running_loss / count, running_acc / count
 
@@ -69,12 +69,13 @@ def train(
             model.train()
             writer.add_scalars("loss", {"valid_loss": valid_loss}, global_step=step)
             writer.add_scalars("acc", {"valid_acc": valid_acc}, global_step=step)
+            print(f"{step + 1} steps - Train loss: {batch_loss} | Train acc: {batch_acc} | Valid loss: {valid_loss} | Valid acc: {valid_acc}")
 
             if valid_acc > best_accuracy:
                 best_accuracy = valid_acc
                 best_state_dict = model.state_dict()
                 torch.save(best_state_dict, f"./models/{trial_name}.ckpt")
-                print("Saving model with acc {:.3f}".format(valid_acc))
+                print("{} steps: Saving model with acc {:.3f}".format(step + 1, valid_acc))
 
 
 def prediction(test_loader: DataLoader, model: nn.Module) -> None:
