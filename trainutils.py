@@ -61,14 +61,14 @@ def train(
         preds = y_hat.argmax(1)
         batch_loss = loss.item()
         batch_acc = torch.mean((preds == y).float()).item()
-        writer.add_scalars("loss", {"train_loss": batch_loss}, global_step=step)
-        writer.add_scalars("acc", {"train_acc": batch_acc}, global_step=step)
+        writer.add_scalars("loss", {"train_loss": batch_loss}, global_step=step + 1)
+        writer.add_scalars("acc", {"train_acc": batch_acc}, global_step=step + 1)
 
         if (step + 1) % valid_steps == 0:
             valid_loss, valid_acc = test(valid_loader, model, criterion)
             model.train()
-            writer.add_scalars("loss", {"valid_loss": valid_loss}, global_step=step)
-            writer.add_scalars("acc", {"valid_acc": valid_acc}, global_step=step)
+            writer.add_scalars("loss", {"valid_loss": valid_loss}, global_step=step + 1)
+            writer.add_scalars("acc", {"valid_acc": valid_acc}, global_step=step + 1)
             print(f"{step + 1} steps - Train loss: {batch_loss} | Train acc: {batch_acc} | Valid loss: {valid_loss} | Valid acc: {valid_acc}")
 
             if valid_acc > best_accuracy:
