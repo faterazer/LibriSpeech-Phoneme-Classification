@@ -2,3 +2,4 @@
 logs/
 models/
 *.pyc
+.DS_Store
